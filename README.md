@@ -29,6 +29,19 @@ Start it: sudo /opt/sonar/bin/linux-x86-64/sonar.sh start
 
 
 
+Manual PostgreSql stuff:
+sudo -i
+sudo - postgres
+psql
+  * \list
+  * drop database sonar;
+  * drop role sonar;
+  * create role sonar password 'sonarpasswd';
+  * create database sonar owner=sonar encoding='UTF-8';
+  * GRANT ALL ON DATABASE sonar TO sonar;
+  * 
+
+
 Files Needed:
   sonarqube-4.5.1.zip
   sonar-runner-dist-2.4.zip

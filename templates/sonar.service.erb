@@ -1,0 +1,25 @@
+# /etc/systemd/system
+# http://0pointer.de/public/systemd-man/systemd.unit.html
+# http://www.sonarqube.org/
+
+[Unit]
+Description=SonarQube an open platform to manage code quality.
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/opt/sonar/bin/linux-x86-64/SonarQube.pid
+ExecStart=/opt/sonar/bin/linux-x86-64/sonar.sh start
+ExecReload=/opt/sonar/bin/linux-x86-64/sonar.sh restart
+ExecStop=/opt/sonar/bin/linux-x86-64/sonar.sh stop
+
+# See: man systemd.exec
+[Exec]
+User=sonar
+Group=sonar
+
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -115,29 +115,29 @@ file { "$SONARQUBE_HOME/extensions/plugins/sonar-abacus-plugin-0.1.jar":
 
 
 #sonar.jdbc.username=sonar
-#sonar.jdbc.password=sonar
-#sonar.jdbc.url=jdbc:postgresql://localhost/sonar
 file_line { 'set_sonar_db_username':
-  ensure => present,
-  line   => 'sonar.jdbc.username=sonar',
   path   => "$SONARQUBE_CONF",
+  line  => 'sonar.jdbc.username=sonar',
+  match => '^.*sonar.jdbc.username=*',
   require => Exec [ 'install_sonar' ],
 }
 
-
+#sonar.jdbc.password=sonar
 file_line { 'set_sonar_db_passwd':
-  ensure => present,
-  line   => 'sonar.jdbc.password=sonarpasswd',
   path   => "$SONARQUBE_CONF",
+  line  => 'sonar.jdbc.password=sonarpasswd',
+  match => '^.*sonar.jdbc.password=*',
   require => Exec [ 'install_sonar' ],
 }
 
+#sonar.jdbc.url=jdbc:postgresql:
 file_line { 'set_sonar_db_postgresql':
-  ensure => present,
-  line   => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
   path   => "$SONARQUBE_CONF",
+  line  => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
+  match => '^.*sonar.jdbc.url=jdbc:postgresql:*',
   require => Exec [ 'install_sonar' ],
 }
+
 
 group { 'sonar':
   ensure => present,

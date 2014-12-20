@@ -42,6 +42,10 @@ $szSonarName = 'sonarqube-4.5.1'
 $SONARQUBE_HOME = "/opt/$szSonarName"
 $SONARQUBE_CONF = "$SONARQUBE_HOME/conf/sonar.properties"
 
+$szSonarRunnerName = 'sonar-runner-dist-2.4'
+$SONARRUNNER_HOME  = "/opt/$szSonarRunnerName"
+$SONARRUNNER_CONF = "$SONARRUNNER_HOME/conf/sonar.properties"
+
 # PostGresql
 class { 'postgresql::server':
   ip_mask_allow_all_users    => '0.0.0.0/0',
@@ -72,6 +76,18 @@ postgresql::server::role { 'sonar':
 
 
 
+
+exec { 'install_sonarrunner':
+  creates  => "$SONARRUNNER_HOME",
+  command => "cd /opt; unzip $szSourceBaseDirectory/$szSonarRunnerName.zip",
+  path    => [ '/bin/' ],
+}
+
+file { '/opt/sonar':
+  ensure  => link,
+  target  => "/opt/$szSonarRunnerName",
+  require => Exec [ 'install_sonarrunner' ],
+}
 
 
 # sonarqube-4.5.1.zip
@@ -133,6 +149,30 @@ file_line { 'set_sonar_db_passwd':
 #sonar.jdbc.url=jdbc:postgresql:
 file_line { 'set_sonar_db_postgresql':
   path   => "$SONARQUBE_CONF",
+  line  => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
+  match => '^.*sonar.jdbc.url=jdbc:postgresql:*',
+  require => Exec [ 'install_sonar' ],
+}
+
+#sonar.jdbc.username=sonar
+file_line { 'set_sonar_db_username':
+  path   => "$SONARRUNNER_CONF",
+  line  => 'sonar.jdbc.username=sonar',
+  match => '^.*sonar.jdbc.username=*',
+  require => Exec [ 'install_sonar' ],
+}
+
+#sonar.jdbc.password=sonar
+file_line { 'set_sonar_db_passwd':
+  path   => "$SONARRUNNER_CONF",
+  line  => 'sonar.jdbc.password=sonarpasswd',
+  match => '^.*sonar.jdbc.password=*',
+  require => Exec [ 'install_sonar' ],
+}
+
+#sonar.jdbc.url=jdbc:postgresql:
+file_line { 'set_sonar_db_postgresql':
+  path   => "$SONARRUNNER_CONF",
   line  => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
   match => '^.*sonar.jdbc.url=jdbc:postgresql:*',
   require => Exec [ 'install_sonar' ],

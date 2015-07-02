@@ -83,11 +83,13 @@ exec { 'install_sonarrunner':
   path    => [ '/bin/' ],
 }
 
-file { '/opt/sonar':
-  ensure  => link,
-  target  => "/opt/$szSonarRunnerName",
-  require => Exec [ 'install_sonarrunner' ],
-}
+
+# TODO V Fix this sonnar rnner thing.
+#file { '/opt/sonar':
+#  ensure  => link,
+#  target  => "/opt/$szSonarRunnerName",
+#  require => Exec [ 'install_sonarrunner' ],
+#}
 
 
 # sonarqube-4.5.1.zip
@@ -155,28 +157,29 @@ file_line { 'set_sonar_db_postgresql':
 }
 
 #sonar.jdbc.username=sonar
-file_line { 'set_sonar_db_username':
-  path   => "$SONARRUNNER_CONF",
-  line  => 'sonar.jdbc.username=sonar',
-  match => '^.*sonar.jdbc.username=*',
-  require => Exec [ 'install_sonar' ],
-}
+# TODO N This seems to be a double.
+#file_line { 'set_sonar_db_username':
+#  path   => "$SONARRUNNER_CONF",
+#  line  => 'sonar.jdbc.username=sonar',
+#  match => '^.*sonar.jdbc.username=*',
+#  require => Exec [ 'install_sonar' ],
+#}
 
 #sonar.jdbc.password=sonar
-file_line { 'set_sonar_db_passwd':
-  path   => "$SONARRUNNER_CONF",
-  line  => 'sonar.jdbc.password=sonarpasswd',
-  match => '^.*sonar.jdbc.password=*',
-  require => Exec [ 'install_sonar' ],
-}
+#file_line { 'set_sonar_db_passwd':
+#  path   => "$SONARRUNNER_CONF",
+#  line  => 'sonar.jdbc.password=sonarpasswd',
+#  match => '^.*sonar.jdbc.password=*',
+#  require => Exec [ 'install_sonar' ],
+#}
 
 #sonar.jdbc.url=jdbc:postgresql:
-file_line { 'set_sonar_db_postgresql':
-  path   => "$SONARRUNNER_CONF",
-  line  => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
-  match => '^.*sonar.jdbc.url=jdbc:postgresql:*',
-  require => Exec [ 'install_sonar' ],
-}
+#file_line { 'set_sonar_db_postgresql':
+#  path   => "$SONARRUNNER_CONF",
+#  line  => 'sonar.jdbc.url=jdbc:postgresql://localhost/sonar',
+#  match => '^.*sonar.jdbc.url=jdbc:postgresql:*',
+#  require => Exec [ 'install_sonar' ],
+#}
 
 
 group { 'sonar':
